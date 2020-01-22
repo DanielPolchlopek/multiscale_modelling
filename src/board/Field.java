@@ -21,6 +21,14 @@ public class Field {
         this.coloredPrevStep = false;
     }
 
+    public Field(int xPosition, int yPosition, int phase, int id) {
+        this.xPosition = xPosition;
+        this.yPosition = yPosition;
+        this.phase = phase;
+        this.id = id;
+        this.coloredPrevStep = false;
+    }
+
 
     public int getId() {
         return id;
@@ -42,6 +50,10 @@ public class Field {
         return phase;
     }
 
+    public void setPhase(int phase) {
+        this.phase = phase;
+    }
+
     public Color getColor() {
         return color;
     }
@@ -56,5 +68,16 @@ public class Field {
 
     public void setColoredPrevStep(boolean coloredPrevStep) {
         this.coloredPrevStep = coloredPrevStep;
+    }
+
+    @Override
+    public String toString() {
+        return "Field{" +
+                "xPosition=" + xPosition +
+                ", yPosition=" + yPosition +
+                ", phase=" + phase +
+                ", id=" + id +
+                ", coloredPrevStep=" + coloredPrevStep +
+                '}';
     }
 }

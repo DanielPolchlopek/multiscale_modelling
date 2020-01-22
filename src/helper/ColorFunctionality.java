@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class ColorFunctionality {
 
-    private HashMap<Integer, Color> usedColor = new HashMap<>();
+    public HashMap<Integer, Color> usedColor = new HashMap<>();
 
     public ColorFunctionality() {
         usedColor.put(0, Color.WHITE);
@@ -41,6 +41,10 @@ public class ColorFunctionality {
         int a = awtColor.getAlpha();
         double opacity = a / 255.0;
         return javafx.scene.paint.Color.rgb(r, g, b, opacity);
+    }
+
+    protected Color getColor(int id){
+        return usedColor.get(id);
     }
 
 }

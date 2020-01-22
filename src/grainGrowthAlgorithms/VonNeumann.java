@@ -13,7 +13,7 @@ public class VonNeumann extends GrainGrowth {
 
     public void calculate(){
 
-        // algorytm rozrostu
+
         boolean isAllBoardFilled = checkIfBoardFilled();
         int currentSimultionStep = 0;
 
@@ -24,35 +24,35 @@ public class VonNeumann extends GrainGrowth {
 
             updateColoredPrevStepInNeighbour();
 
-            //iteracja po boardzie i pierwsza iteracja
+            //iteracja po boardzie
             for (int i = 0; i < board.getBoard().length; i++) {
                 for (int j = 0; j < board.getBoard()[0].length; j++) {
 
                     Field field = board.getBoard()[i][j];
-                    if (field.getId() == 0 && field.isColoredPrevStep()) {
-//
+
+                    if (field.getId() == 0 &&
+                            field.isColoredPrevStep() &&
+                            field.getId() != 100 &&
+                            field.getId() != 101 &&
+                            field.getPhase() != 1) {
+
                         // algorytm sasiedztwa
                         int xPos = field.getxPosition();
                         int yPos = field.getyPosition();
 
-                        System.out.println("------------------------------------------");
                         boolean ifFirstRuleCompleted = firstRule(xPos, yPos);
-                        System.out.println("Rule 1: " + ifFirstRuleCompleted);
                         if (ifFirstRuleCompleted)
                             continue;
 
                         boolean ifSecondRuleCompleted = secondRule(xPos, yPos);
-                        System.out.println("Rule 2: " + ifSecondRuleCompleted);
                         if (ifSecondRuleCompleted)
                             continue;
 
                         boolean ifThirdRuleCompleted = thirdRule(xPos, yPos);
-                        System.out.println("Rule 3: " + ifThirdRuleCompleted);
                         if (ifThirdRuleCompleted)
                             continue;
 
                         boolean ifFourthRuleCompleted = fourthRule(xPos, yPos);
-                        System.out.println("Rule 4: " + ifFourthRuleCompleted);
                         if (ifFourthRuleCompleted)
                             continue;
 
@@ -62,21 +62,21 @@ public class VonNeumann extends GrainGrowth {
                 }
             }
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
+            board.redraw();
             isAllBoardFilled = checkIfBoardFilled();
             currentSimultionStep++;
 
-            board.matchColorToModifiedFields();
-            board.redraw();
+//            Thread t1 = new Thread(){
+//                @Override
+//                public void run() {
+//                    super.run();
+//                    board.redraw();
+//                }
+//            };
+//            t1.start();
 
         }
     }
-
 
     private HashMap<Integer, Integer> getMapForNeighborhood(final int currentXPosition, final int currentYPosition){
         final int prevXPosition = currentXPosition - 1;
@@ -126,7 +126,9 @@ public class VonNeumann extends GrainGrowth {
     }
 
     private void addElementToMap(HashMap<Integer, Integer> map, final int id){
-        if (id == 0)
+        if (id == WHITE_FIELD_ID ||
+            id == INCLUSION_ID ||
+            id == DUAL_PHASE_ID)
             return;
 
         int count = map.getOrDefault(id, 0);
@@ -142,11 +144,6 @@ public class VonNeumann extends GrainGrowth {
 
         return result;
     }
-
-
-
-
-
 
     private boolean firstRule(final int currentXPosition, final int currentYPosition){
         final int prevXPosition = currentXPosition - 1;

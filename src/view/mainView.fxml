@@ -9,10 +9,11 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600" minWidth="800" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
+<BorderPane fx:id="borderPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600" minWidth="800" prefHeight="639.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.Controller">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -26,29 +27,37 @@
       </MenuBar>
    </top>
    <center>
-      <Canvas fx:id="canvas" height="200.0" width="200.0" BorderPane.alignment="CENTER" />
+      <Canvas fx:id="canvas" height="415.0" onMouseClicked="#mouseClicked" width="436.0" BorderPane.alignment="CENTER" />
    </center>
    <left>
       <VBox fillWidth="false" nodeOrientation="LEFT_TO_RIGHT" prefHeight="375.0" prefWidth="108.0" BorderPane.alignment="CENTER">
          <children>
-            <VBox prefHeight="171.0" prefWidth="100.0">
+            <HBox prefHeight="37.0" prefWidth="108.0">
                <children>
+                  <Label text="Clicked: " />
+                  <Canvas fx:id="clickedColor" height="20.0" width="20.0" />
+               </children>
+            </HBox>
+            <VBox prefHeight="218.0" prefWidth="100.0">
+               <children>
+                  <Label text="LAB 1" />
                   <Label text="xSize" />
                   <TextField fx:id="xSizeView" />
                   <Label text="ySize" />
                   <TextField fx:id="ySizeView" />
                   <Label text="Amount of seed:" />
                   <TextField fx:id="seedAmount" />
+                  <Button mnemonicParsing="false" onAction="#clearBoard" text="Clear Board">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
                   <Button mnemonicParsing="false" onAction="#generateBoard" prefWidth="99.0" text="Generate Board" />
                </children>
             </VBox>
-            <Button mnemonicParsing="false" onAction="#clearBoard" text="Clear Board">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Button>
-            <VBox prefHeight="200.0" prefWidth="100.0">
+            <VBox prefHeight="140.0" prefWidth="100.0">
                <children>
+                  <Label text="LAB 2" />
                   <Label text="Amount of inclusions:" />
                   <TextField fx:id="inclusionAmount" />
                   <Label text="Size of Inclusions:" />
@@ -58,9 +67,17 @@
                </children></VBox>
             <VBox prefHeight="200.0" prefWidth="100.0">
                <children>
+                  <Label text="LAB 4" />
+                  <Button mnemonicParsing="false" onAction="#clearSeedWithoutPhase" text="Clear not phase" />
+               </children>
+            </VBox>
+            <VBox prefHeight="113.0" prefWidth="100.0">
+               <children>
+                  <Label text="LAB 5" />
                   <Label text="Simulation steps" />
-                  <TextField fx:id="simultionStepNumber" />
-                  <Button mnemonicParsing="false" onAction="#draw" text="Debug" />
+                  <TextField fx:id="simulationStepNumber" />
+                  <Button mnemonicParsing="false" onAction="#drawBoundary" text="Boundary" />
+                  <Button mnemonicParsing="false" onAction="#clearSeed" text="Clear Seed" />
                </children></VBox>
          </children>
       </VBox>
