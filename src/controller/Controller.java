@@ -6,7 +6,7 @@ import board.Field;
 import dto.Pixel;
 import file.FileSchema;
 import grainGrowthAlgorithms.GrainGrowth;
-import grainGrowthAlgorithms.VonNeumann;
+import grainGrowthAlgorithms.Moore;
 import helper.ColorFunctionality;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -379,7 +379,7 @@ public class Controller extends ColorFunctionality implements Initializable {
 
         // inicjacja algorytmu
         GrainGrowth grainAlgorithm =
-                new VonNeumann(board,
+                new Moore(board,
                             iSeedAmount,
                             simulationStep);
 
@@ -594,5 +594,26 @@ public class Controller extends ColorFunctionality implements Initializable {
 
         board.redraw();
     }
+
+    @FXML
+    public void clearSeedWithoutSubstructure(){
+
+        Arrays.stream(board.getBoard()).flatMap(Stream::of)
+                .forEach(field -> {
+                    if (clickedSeeds.contains(field.getId()))
+                        field.setPhase(1);
+                });
+
+        Arrays.stream(board.getBoard()).flatMap(Stream::of)
+                .forEach(field -> {
+                    if (field.getPhase() != 1){
+                        field.setId(0);
+                        field.setColoredPrevStep(false);
+                    }
+                });
+
+        board.redraw();
+    }
+
 
 }
