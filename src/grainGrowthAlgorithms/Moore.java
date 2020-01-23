@@ -234,6 +234,8 @@ public class Moore extends GrainGrowth {
         final int nextYPosition = currentYPosition + 1;
         HashMap<Integer, Integer> nearestNeighbor = new HashMap<>();
 
+
+
         //-1 .x.
         if (prevYPosition >= 0 && currentXPosition >= 0)
             addElementToMap(nearestNeighbor,
