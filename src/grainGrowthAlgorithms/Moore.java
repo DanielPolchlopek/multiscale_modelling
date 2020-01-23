@@ -44,14 +44,17 @@ public class Moore extends GrainGrowth {
                         boolean ifFirstRuleCompleted = firstRule(xPos, yPos);
                         if (ifFirstRuleCompleted)
                             continue;
+                        System.out.println("x: " + j + " ,y: " + i + "Rule 1");
 
                         boolean ifSecondRuleCompleted = secondRule(xPos, yPos);
                         if (ifSecondRuleCompleted)
                             continue;
+                        System.out.println("x: " + j + " ,y: " + i + "Rule 2");
 
                         boolean ifThirdRuleCompleted = thirdRule(xPos, yPos);
                         if (ifThirdRuleCompleted)
                             continue;
+                        System.out.println("x: " + j + " ,y: " + i + "Rule 3");
 
                         boolean ifFourthRuleCompleted = fourthRule(xPos, yPos);
                         if (ifFourthRuleCompleted)
@@ -66,15 +69,6 @@ public class Moore extends GrainGrowth {
             board.redraw();
             isAllBoardFilled = checkIfBoardFilled();
             currentSimultionStep++;
-
-//            Thread t1 = new Thread(){
-//                @Override
-//                public void run() {
-//                    super.run();
-//                    board.redraw();
-//                }
-//            };
-//            t1.start();
 
         }
     }
@@ -137,35 +131,29 @@ public class Moore extends GrainGrowth {
         return result;
     }
 
-    private int getMostFrequentNeighbor(final int currentXPosition, final int currentYPosition){
-        HashMap<Integer, Integer> res = getMapForNeighborhood(currentXPosition, currentYPosition);
-        return getMostFrequentKeyFromMap(res);
-    }
-
     private void addElementToMap(HashMap<Integer, Integer> map, final int id, final int phase){
-        if (phase == 1)
-            System.out.println("[add element to hashmap]Phase: " + phase);
-
         if (id == WHITE_FIELD_ID ||
-            id == INCLUSION_ID ||
-            id == DUAL_PHASE_ID ||
-            phase == 1){
+                id == INCLUSION_ID ||
+                id == DUAL_PHASE_ID ||
+                phase == 1){
             return;
         }
-
 
         int count = map.getOrDefault(id, 0);
         map.put(id, count + 1);
     }
 
     private int getMostFrequentKeyFromMap(HashMap<Integer, Integer> map){
-        int result = -1;
-        for (Integer tmpValue : map.keySet()) {
-            if (result < map.get(tmpValue))
-                result = tmpValue;
+        int key = -1;
+        int maxValue = -1;
+        for (Integer tmpKey : map.keySet()) {
+            if (maxValue < map.get(tmpKey)){
+                key =tmpKey;
+                maxValue = map.get(tmpKey);
+            }
         }
 
-        return result;
+        return key;
     }
 
     private boolean firstRule(final int currentXPosition, final int currentYPosition){
@@ -223,9 +211,17 @@ public class Moore extends GrainGrowth {
                     board.getBoard()[nextYPosition][nextXPosition].getId(),
                     board.getBoard()[nextYPosition][nextXPosition].getPhase());
 
-        int mostFrequentValue = getMostFrequentKeyFromMap(neighborhood);
+        int mostFrequentKey = getMostFrequentKeyFromMap(neighborhood);
+        int mostFrequentValue = -1;
+        try{
+            mostFrequentValue = neighborhood.get((Integer)mostFrequentKey);
+        }
+        catch(Exception e){
+            return false;
+        }
+
         if (mostFrequentValue >= 5){
-            board.getBoard()[currentYPosition][currentXPosition].setId(mostFrequentValue);
+            board.getBoard()[currentYPosition][currentXPosition].setId(mostFrequentKey);
             return true;
         }
         return false;
@@ -262,13 +258,21 @@ public class Moore extends GrainGrowth {
                     board.getBoard()[nextYPosition][currentXPosition].getId(),
                     board.getBoard()[nextYPosition][currentXPosition].getPhase());
 
-        int mostFrequentValue = getMostFrequentKeyFromMap(nearestNeighbor);
+        int mostFrequentKey = getMostFrequentKeyFromMap(nearestNeighbor);
+        int mostFrequentValue = -1;
+        try{
+            mostFrequentValue = nearestNeighbor.get((Integer)mostFrequentKey);
+        }
+        catch(Exception e){
+            return false;
+        }
+
         if (mostFrequentValue >= 3){
-            board.getBoard()[currentYPosition][currentXPosition].setId(mostFrequentValue);
+            board.getBoard()[currentYPosition][currentXPosition].setId(mostFrequentKey);
             return true;
         }
 
-       // System.out.println("Second rule - Most frequent nearest neighbourhood: " + nearestNeighbor.get(mostFrequentValue));
+        // System.out.println("Second rule - Most frequent nearest neighbourhood: " + nearestNeighbor.get(mostFrequentValue));
         return false;
     }
 
@@ -303,9 +307,16 @@ public class Moore extends GrainGrowth {
                     board.getBoard()[nextYPosition][nextXPosition].getId(),
                     board.getBoard()[nextYPosition][nextXPosition].getPhase());
 
-        int mostFrequentValue = getMostFrequentKeyFromMap(furtherNeighbor);
+        int mostFrequentKey = getMostFrequentKeyFromMap(furtherNeighbor);
+        int mostFrequentValue = -1;
+        try{
+            mostFrequentValue = furtherNeighbor.get((Integer)mostFrequentKey);
+        }
+        catch(Exception e){
+            return false;
+        }
         if (mostFrequentValue >= 3){
-            board.getBoard()[currentYPosition][currentXPosition].setId(mostFrequentValue);
+            board.getBoard()[currentYPosition][currentXPosition].setId(mostFrequentKey);
             return true;
         }
 
@@ -314,26 +325,75 @@ public class Moore extends GrainGrowth {
     }
 
     private boolean fourthRule(final int currentXPosition, final int currentYPosition){
-        final int PROBABILITY = 10;
-        final HashMap<Integer, Integer> neighborhood = getMapForNeighborhood(currentXPosition, currentYPosition);
-        final int mostFrequentNeighbor = getMostFrequentNeighbor(currentXPosition, currentYPosition);
 
+        final int prevXPosition = currentXPosition - 1;
+        final int prevYPosition = currentYPosition - 1;
+        final int nextXPosition = currentXPosition + 1;
+        final int nextYPosition = currentYPosition + 1;
+        HashMap<Integer, Integer> neighbourhood = new HashMap<>();
+
+        //x..
+        if (prevYPosition >= 0 && prevXPosition >= 0)
+            addElementToMap(neighbourhood,
+                    board.getBoard()[prevYPosition][prevXPosition].getId(),
+                    board.getBoard()[prevYPosition][prevXPosition].getPhase());
+
+        //.x.
+        if (prevYPosition >= 0 && currentXPosition >= 0)
+            addElementToMap(neighbourhood,
+                    board.getBoard()[prevYPosition][currentXPosition].getId(),
+                    board.getBoard()[prevYPosition][currentXPosition].getPhase());
+
+        //..x
+        if (prevYPosition >= 0 && nextXPosition < xBoardDimension)
+            addElementToMap(neighbourhood,
+                    board.getBoard()[prevYPosition][nextXPosition].getId(),
+                    board.getBoard()[prevYPosition][nextXPosition].getPhase());
+
+        //x..
+        if (currentYPosition >= 0 && prevXPosition >= 0)
+            addElementToMap(neighbourhood,
+                    board.getBoard()[currentYPosition][prevXPosition].getId(),
+                    board.getBoard()[currentYPosition][prevXPosition].getPhase());
+
+        //..x
+        if (currentYPosition >= 0 && nextXPosition < xBoardDimension)
+            addElementToMap(neighbourhood,
+                    board.getBoard()[currentYPosition][nextXPosition].getId(),
+                    board.getBoard()[currentYPosition][nextXPosition].getPhase());
+
+        //x..
+        if (nextYPosition < yBoardDimension && prevXPosition >= 0)
+            addElementToMap(neighbourhood,
+                    board.getBoard()[nextYPosition][prevXPosition].getId(),
+                    board.getBoard()[nextYPosition][prevXPosition].getPhase());
+
+        //.x.
+        if (nextYPosition < yBoardDimension && currentXPosition >= 0)
+            addElementToMap(neighbourhood,
+                    board.getBoard()[nextYPosition][currentXPosition].getId(),
+                    board.getBoard()[nextYPosition][currentXPosition].getPhase());
+
+        //..x
+        if (nextYPosition < yBoardDimension && nextXPosition < xBoardDimension)
+            addElementToMap(neighbourhood,
+                    board.getBoard()[nextYPosition][nextXPosition].getId(),
+                    board.getBoard()[nextYPosition][nextXPosition].getPhase());
+
+        int mostFrequentKey = getMostFrequentKeyFromMap(neighbourhood);
+
+
+        if (mostFrequentKey == -1)
+            return false;
+
+
+        final int PROBABILITY = 50;
         Random r = new Random();
         int randomValue = r.nextInt(100);
 
 
-        int amountOfNeighbor = -1;
-        try {
-            amountOfNeighbor = neighborhood.get(mostFrequentNeighbor);
-        }
-        catch (Exception e){
-            return false;
-        }
-        final int countedProbability = amountOfNeighbor * 100 / 8;
-
-
         if (randomValue <= PROBABILITY){
-            board.getBoard()[currentYPosition][currentXPosition].setId(mostFrequentNeighbor);
+            board.getBoard()[currentYPosition][currentXPosition].setId(mostFrequentKey);
             return true;
         }
 
