@@ -78,7 +78,7 @@
                   <Label text="Simulation steps" />
                   <TextField fx:id="simulationStepNumber" />
                   <Button mnemonicParsing="false" onAction="#drawBoundary" text="Boundary" />
-                  <Button mnemonicParsing="false" onAction="#clearSeed" text="Clear Seed" />
+                  <Button mnemonicParsing="false" onAction="#clearSeed" text="Clear Grains" />
                </children></VBox>
          </children>
       </VBox>
